@@ -1,8 +1,8 @@
 " Vim filetype plugin
 " Language:	LaTeX
 " Maintainer: Carl Mueller, math at carlm e4ward c o m
-" Last Change:	June 7, 2014
-" Version:  2.2.15
+" Last Change:	December 21, 2014
+" Version:  2.2.x
 " Website: http://www.math.rochester.edu/people/faculty/cmlr/Latex/index.html
 
 " "========================================================================="
@@ -36,19 +36,19 @@ let mapleader = '`'
 "
 " The following templates are inserted with <F1> - <F4>, in normal mode.
 " The first 2 are for latex documents, which have "\title{}"
-let b:template_1 = '~/.Vim/latex'
-let b:template_2 = '~/.Vim/min-latex'
+"let b:template_1 = '~/.vim/latex'
+"let b:template_2 = '~/.vim/min-latex'
 " The next template is for a letter, which has "\opening{}"
-let b:template_3 = '~/.Vim/letter'
+"let b:template_3 = '~/.vim/letter'
 " The next template is for a miscellaneous document.
-let b:template_4 = '~/Storage/Latex/exam.tex'
+"let b:template_4 = '~/Documents/Repository/TeX/notes.template'
 
 " Vim commands to run latex and the dvi viewer.
 " Must be of the form "! ... % ..."
 " The following command may make xdvi automatically update.
 "let b:latex_command = "! xterm -bg ivory -fn 7x14 -e latex \\\\nonstopmode \\\\input\\{%\\}; cat %<.log"
 "let b:latex_command = "! xterm -e latex \\\\nonstopmode \\\\input\\{%\\}"
-let b:latex_command = "!latex \\\\nonstopmode \\\\input\\{%\\}"
+let b:latex_command = "!rubber --inplace --maxerr -1 --short --force --warn all --pdf %"
 let b:dvi_viewer_command = "! xdvi -expert -s 6 -margins 2cm -geometry 750x950 %< &"
 "let b:dvi_viewer_command = "! kdvi %< &"
 
@@ -335,10 +335,10 @@ endfunction
 " F2 inserts a minimal latex template
 " F3 inserts a letter template
 " F4 inserts an exam template
-execute "map <buffer> <F1> :if strpart(getline(1),0,9) != \"\\\\document\"<CR>0read " . b:template_1 . "<CR>call search(\"title\")<CR>endif<Esc><Space>f}i"
-execute "map <buffer> <F2> :if strpart(getline(1),0,9) != \"\\\\document\"<CR>0read " . b:template_2 . "<CR>call search(\"title\")<CR>endif<Esc><Space>f}i"
-execute "map <buffer> <F3> :if strpart(getline(1),0,9) != \"\\\\document\"<CR>0read " . b:template_3 . "<CR>call search(\"opening\")<CR>endif<Esc><Space>f}i"
-execute "map <buffer> <F4> :if strpart(getline(1),0,9) != \"\\\\document\"<CR>0read " . b:template_4
+"execute "map <buffer> <F1> :if strpart(getline(1),0,9) != \"\\\\document\"<CR>0read " . b:template_1 . "<CR>call search(\"title\")<CR>endif<Esc><Space>f}i"
+"execute "map <buffer> <F2> :if strpart(getline(1),0,9) != \"\\\\document\"<CR>0read " . b:template_2 . "<CR>call search(\"title\")<CR>endif<Esc><Space>f}i"
+"execute "map <buffer> <F3> :if strpart(getline(1),0,9) != \"\\\\document\"<CR>0read " . b:template_3 . "<CR>call search(\"opening\")<CR>endif<Esc><Space>f}i"
+"execute "map <buffer> <F4> :if strpart(getline(1),0,9) != \"\\\\document\"<CR>0read " . b:template_4
 
 "       dictionary
 " set dictionary+=(put filename and path here)
@@ -350,21 +350,24 @@ execute "map <buffer> <F4> :if strpart(getline(1),0,9) != \"\\\\document\"<CR>0r
 " Key Bindings  {{{
 
 " Run Latex;  change these bindings if you like.
-noremap <buffer><silent> K :call <SID>RunLatex()<CR><Esc>:!pkill -USR1 xdvi<CR><Esc>
-noremap <buffer><silent> <C-K> :call <SID>NextTexError()<CR>
+"noremap <buffer><silent> K :call <SID>RunLatex()<CR><Esc>:!pkill -USR1 xdvi<CR><Esc>
+"noremap <buffer><silent> <C-K> :call <SID>NextTexError()<CR>
+"noremap <buffer><silent> <S-Tab> :call <SID>NextTexError()<CR>
+"noremap <buffer><silent> <C-Tab> :call <SID>RunLatex()<CR><Esc>
+"inoremap <buffer><silent> <C-Tab> <C-O>:call <SID>RunLatex()<CR><Esc>
 
-noremap <buffer><silent> \lr :call <SID>CheckReferences('Reference', 'ref')<CR><Space>
-noremap <buffer><silent> \lc :call <SID>CheckReferences('Citation', 'cite')<CR><Space>
-noremap <buffer><silent> \lg :call <SID>LookAtLogFile()<CR>gg/LaTeX Warning\\|^!<CR>
+"noremap <buffer><silent> \lr :call <SID>CheckReferences('Reference', 'ref')<CR><Space>
+"noremap <buffer><silent> \lc :call <SID>CheckReferences('Citation', 'cite')<CR><Space>
+"noremap <buffer><silent> \lg :call <SID>LookAtLogFile()<CR>gg/LaTeX Warning\\|^!<CR>
 
 " Run the Latex viewer;  change these bindings if you like.
-noremap <buffer><silent> <S-Esc> :call <SID>Xdvi()<CR><Space>
-inoremap <buffer><silent> <S-Esc> <Esc>:call <SID>Xdvi()<CR><Space>
+"noremap <buffer><silent> <S-Esc> :call <SID>Xdvi()<CR><Space>
+"inoremap <buffer><silent> <S-Esc> <Esc>:call <SID>Xdvi()<CR><Space>
 
 " Run Ispell on either the buffer, or the visually selected word.
-noremap <buffer><silent> <S-Insert> :w<CR>:!xterm -bg ivory -fn 10x20 -e ispell %<CR><Space>:e %<CR>:redraw<CR>:echo "No (more) spelling errors."<CR>
-inoremap <buffer><silent> <S-Insert> <Esc>:w<CR>:!xterm -bg ivory -fn 10x20 -e ispell %<CR><Space>:e %<CR>:redraw<CR>:echo "No (more) spelling errors."<CR>
-vnoremap <buffer><silent> <S-Insert> <C-C>`<v`>s<Space><Esc>mq<C-W>s:e ispell.tmp<CR>i<C-R>"<Esc>:w<CR>:!xterm -bg ivory -fn 10x20 -e ispell %<CR><CR>:e %<CR><CR>ggVG<Esc>`<v`>s<Esc>:bwipeout!<CR>:!rm ispell.tmp*<CR>`q"_s<C-R>"<Esc>:redraw<CR>:echo "No (more) spelling errors."<CR>
+"noremap <buffer><silent> <S-Insert> :w<CR>:!xterm -bg ivory -fn 10x20 -e ispell %<CR><Space>:e %<CR>:redraw<CR>:echo "No (more) spelling errors."<CR>
+"inoremap <buffer><silent> <S-Insert> <Esc>:w<CR>:!xterm -bg ivory -fn 10x20 -e ispell %<CR><Space>:e %<CR>:redraw<CR>:echo "No (more) spelling errors."<CR>
+"vnoremap <buffer><silent> <S-Insert> <C-C>`<v`>s<Space><Esc>mq<C-W>s:e ispell.tmp<CR>i<C-R>"<Esc>:w<CR>:!xterm -bg ivory -fn 10x20 -e ispell %<CR><CR>:e %<CR><CR>ggVG<Esc>`<v`>s<Esc>:bwipeout!<CR>:!rm ispell.tmp*<CR>`q"_s<C-R>"<Esc>:redraw<CR>:echo "No (more) spelling errors."<CR>
 
 " Run Ispell (Thanks the Charles Campbell)
 " The first set is for vim, the second set for gvim.
@@ -525,19 +528,19 @@ endfunction
 "
 " and S-F1 - S-F5, which are used to change environments, are similar.
 
-inoremap <buffer><silent> <F1> \begin{equation}<CR>\label{}<CR><CR>\end{equation}<Esc>2k$i
+inoremap <buffer><silent> <F1> \begin{equation}<CR>\end{equation}<Esc>k0
 inoremap <buffer><silent> <F2> <C-R>=<SID>FTwo(<SID>AmsLatex(b:AMSLatex))<CR>
 inoremap <buffer><silent> <F3> <C-R>=<SID>FThree(<SID>AmsLatex(b:AMSLatex))<CR>
 inoremap <buffer><silent> <F4> <C-R>=<SID>FFour(<SID>AmsLatex(b:AMSLatex))<CR>
 
-noremap <buffer><silent> <C-S-F1> :silent call <SID>Change('equation', 1, '&\\|\\lefteqn{\\|\\nonumber\\|\\\\', 0)<CR>i
-inoremap <buffer><silent> <C-S-F1> <Esc>:silent call <SID>Change('equation', 1, '&\\|\\lefteqn{\\|\\nonumber\\|\\\\', 0)<CR><Esc>i
-noremap <buffer><silent> <C-S-F2> :silent call <SID>CFTwo(<SID>AmsLatex(b:AMSLatex))<CR>
-inoremap <buffer><silent> <C-S-F2> <Esc>:silent call <SID>CFTwo(<SID>AmsLatex(b:AMSLatex))<CR>
-noremap <buffer><silent> <C-S-F3> :silent call <SID>CFThree(<SID>AmsLatex(b:AMSLatex))<CR>i
-inoremap <buffer><silent> <C-S-F3> <Esc>:silent call <SID>CFThree(<SID>AmsLatex(b:AMSLatex))<CR>i
-noremap <buffer><silent> <C-S-F4> :silent call <SID>CFFour(<SID>AmsLatex(b:AMSLatex))<CR>
-inoremap <buffer><silent> <C-S-F4> <Esc>:silent call <SID>CFFour(<SID>AmsLatex(b:AMSLatex))<CR>
+noremap <buffer><silent> <S-F1> :silent call <SID>Change('equation', 1, '&\\|\\lefteqn{\\|\\nonumber\\|\\\\', 0)<CR>i
+inoremap <buffer><silent> <S-F1> <Esc>:silent call <SID>Change('equation', 1, '&\\|\\lefteqn{\\|\\nonumber\\|\\\\', 0)<CR><Esc>i
+noremap <buffer><silent> <S-F2> :silent call <SID>CFTwo(<SID>AmsLatex(b:AMSLatex))<CR>
+inoremap <buffer><silent> <S-F2> <Esc>:silent call <SID>CFTwo(<SID>AmsLatex(b:AMSLatex))<CR>
+noremap <buffer><silent> <S-F3> :silent call <SID>CFThree(<SID>AmsLatex(b:AMSLatex))<CR>i
+inoremap <buffer><silent> <S-F3> <Esc>:silent call <SID>CFThree(<SID>AmsLatex(b:AMSLatex))<CR>i
+noremap <buffer><silent> <S-F4> :silent call <SID>CFFour(<SID>AmsLatex(b:AMSLatex))<CR>
+inoremap <buffer><silent> <S-F4> <Esc>:silent call <SID>CFFour(<SID>AmsLatex(b:AMSLatex))<CR>
 
 inoremap <buffer><silent> <F6> \left\{\begin{array}{ll}<CR>&\mbox{$$} \\<CR>&\mbox{}<CR>\end{array}<CR>\right.<Up><Up><Up><Home>
 "inoremap <buffer><silent> <F7> \textbf{Proof.}<CR><CR><CR>\qed<Up><Up>
@@ -584,21 +587,21 @@ function! s:FTwo(var)
 	    return "$$\<CR>\<CR>$$\<Up>"
 	endif
     else
-	return "\\begin{equation*}\<CR>\<CR>\\end{equation*}\<Up>"
+	return "\\begin{equation}\<CR>\\begin{aligned}\<CR>\\end{aligned}\<CR>\\end{equation}\<Esc>2k0"
     endif
 endfunction
 function! s:FThree(var)
     if a:var == 0
-	return "\\begin{eqnarray}\<CR>\\label{}\<CR>\<CR>\\end{eqnarray}\<Esc>2k$i"
+	return "\\begin{eqnarray}\<CR>\\end{eqnarray}\<Esc>k0"
     else
-	return "\\begin{align}\<CR>\\label{}\<CR>\<CR>\\end{align}\<Esc>2k$i"
+	return "\\begin{align}\<CR>\\end{align}\<Esc>k0"
     endif
 endfunction
 function! s:FFour(var)
     if a:var == 0
-	return "\\begin{eqnarray*}\<CR>\<CR>\\end{eqnarray*}\<Up>"
+	return "\\begin{eqnarray*}\<CR>\\end{eqnarray*}\<Esc>k0"
     else
-	return "\\begin{align*}\<CR>\<CR>\\end{align*}\<Up>"
+	return "\\begin{align*}\<CR>\\end{align*}\<Esc>k0"
     endif
 endfunction
 function! s:Proof(var)
@@ -785,10 +788,13 @@ set notimeout
 inoremap <buffer> <Leader><Leader> <Leader>
 inoremap <buffer> <Leader>a \alpha
 inoremap <buffer> <Leader>b \beta
+inoremap <buffer> <Leader>B \boldsymbol{}<Left>
 inoremap <buffer> <Leader>c \chi
 inoremap <buffer> <Leader>d \delta
 inoremap <buffer> <Leader>e \varepsilon
-inoremap <buffer> <Leader>f \varphi
+inoremap <buffer> <Leader>E \epsilon
+inoremap <buffer> <Leader>f \phi
+inoremap <buffer> <Leader>4 \varphi
 inoremap <buffer> <Leader>g \gamma
 inoremap <buffer> <Leader>h \eta
 inoremap <buffer> <Leader>i \int_{}^{}<Esc>F}i
@@ -799,6 +805,7 @@ inoremap <buffer> <Leader>m \mu
 inoremap <buffer> <Leader>n \nu
 inoremap <buffer> <Leader>o \omega
 inoremap <buffer> <Leader>p \pi
+inoremap <buffer> <Leader>P \Pi
 inoremap <buffer> <Leader>q \theta
 inoremap <buffer> <Leader>r \rho
 inoremap <buffer> <Leader>s \sigma
@@ -818,7 +825,8 @@ inoremap <buffer> <Leader>N \nabla
 inoremap <buffer> <Leader>O \Omega
 inoremap <buffer> <Leader>Q \Theta
 inoremap <buffer> <Leader>R \varrho
-inoremap <buffer> <Leader>S \sum_{}^{}<Esc>F}i
+"inoremap <buffer> <Leader>S \sum_{}^{}<Esc>F}i
+inoremap <buffer> <Leader>S \Sigma
 inoremap <buffer> <Leader>U \Upsilon
 inoremap <buffer> <Leader>X \Xi
 inoremap <buffer> <Leader>Y \Psi
@@ -837,57 +845,37 @@ inoremap <buffer> <Leader>\ \setminus
 inoremap <buffer> <Leader>. \cdot
 inoremap <buffer> <Leader>* \times
 inoremap <buffer> <Leader>& \wedge
-inoremap <buffer> <Leader>- \bigcap
-inoremap <buffer> <Leader>+ \bigcup
+inoremap <buffer> <Leader>_ \bigcap
+inoremap <buffer> <Leader>+ \dagger
+" inoremap <buffer> <Leader>+ \bigcup
 inoremap <buffer> <Leader>( \subset
 inoremap <buffer> <Leader>) \supset
 inoremap <buffer> <Leader>< \leq
 inoremap <buffer> <Leader>> \geq
 inoremap <buffer> <Leader>, \nonumber
 inoremap <buffer> <Leader>: \dots
-inoremap <buffer> <Leader>~ \tilde{}<Left>
+inoremap <buffer> <Leader>~ \widetilde{}<Left>
 inoremap <buffer> <Leader>^ \hat{}<Left>
 inoremap <buffer> <Leader>; \dot{}<Left>
-inoremap <buffer> <Leader>_ \bar{}<Left>
+inoremap <buffer> <Leader>- \bar{}<Left>
 inoremap <buffer> <Leader><M-c> \cos
 inoremap <buffer> <Leader><C-E> \exp\left(\right)<Esc>F(a
 inoremap <buffer> <Leader><C-I> \in
 inoremap <buffer> <Leader><C-J> \downarrow
 inoremap <buffer> <Leader><C-L> \log
 inoremap <buffer> <Leader><C-P> \uparrow
+inoremap <buffer> <Leader><C-Up> \textuparrow{}
 inoremap <buffer> <Leader><Up> \uparrow
 inoremap <buffer> <Leader><C-N> \downarrow
+inoremap <buffer> <Leader><C-Down> \textdownarrow{}
 inoremap <buffer> <Leader><Down> \downarrow
 inoremap <buffer> <Leader><C-F> \to
-inoremap <buffer> <Leader><Right> \lim_{}<Left>
+"inoremap <buffer> <Leader><Right> \lim_{}<Left>
+inoremap <buffer> <Leader><Right> \rightarrow
 inoremap <buffer> <Leader><C-S> \sin
 inoremap <buffer> <Leader><C-T> \tan
 inoremap <buffer> <Leader><M-l> \ell
 inoremap <buffer> <Leader><CR> \nonumber\\<CR><HOME>&&<Left>
-
-" }}}
-" "========================================================================="
-" Emacs-type bindings  {{{
-" vi purists, feel free to delete these!  
-inoremap <buffer> <C-A> <Home>
-inoremap <buffer> <C-B> <Left>
-inoremap <buffer> <C-D> <Del>
-inoremap <buffer> <C-E> <End>
-inoremap <buffer> <C-F> <Right>
-inoremap <buffer> <C-K> <C-R>=<SID>EmacsKill()<CR>
-inoremap <buffer> <C-L> <C-O>zz
-inoremap <buffer> <C-N> <Down>
-inoremap <buffer> <C-P> <Up>
-inoremap <buffer> <C-Y> <C-R>"
-
-function! s:EmacsKill()
-    if col('.') == strlen(getline('.'))+1
-	let @" = "\<CR>"
-	return "\<Del>"
-    else
-	return "\<C-O>D"
-    endif
-endfunction
 
 " }}}
 " "========================================================================="
@@ -927,10 +915,12 @@ map <buffer><silent> gw :call <SID>TeX_par()<CR>
 " In the third, type <M-v>, you're asked for a character to be capitalized.
 " inoremap <buffer> <M-v> \mathbf{}<Left>
 " inoremap <buffer> <Insert>b \mathbf{}<Left>
-inoremap <buffer> <M-v> <Left>\mathbf{<Right>}<Esc>h~a
-inoremap <buffer> <Insert>b <Left>\mathbf{<Right>}<Esc>h~a
-vnoremap <buffer> <M-v> <C-C>`>a}<Esc>`<i\mathbf{<Esc>
-vnoremap <buffer> <Insert>b <C-C>`>a}<Esc>`<i\mathbf{<Esc>
+inoremap <buffer> <Insert>b <Left>\mathbf{<Right>}
+inoremap <buffer> <Insert>B <Left>\mathbb{<Right>}
+inoremap <buffer> <Insert>r <Left>\mathrm{<Right>}
+inoremap <buffer> <Insert>s <Left>\mathsf{<Right>}
+inoremap <buffer> <Insert>f <Left>\mathfrak{<Right>}
+
 "function! s:mathbf()
 "    echo 'Mathbf: '
 "    let c = nr2char(getchar())
@@ -951,6 +941,7 @@ vnoremap <buffer> <M-c> <C-C>`>a}<Esc>`<i\mathcal{<Esc>
 vnoremap <buffer> <Insert>c <C-C>`>a}<Esc>`<i\mathcal{<Esc>
 inoremap <buffer> <M-c> <C-R>=<SID>MathCal()<CR>
 inoremap <buffer> <Insert>c <C-R>=<SID>MathCal()<CR>
+inoremap <buffer> <Insert>C <C-R>=<SID>MathCal()<CR>
 function! s:MathCal()
     if getline('.')[col('.')-2] =~ '[a-zA-Z0-9]'
 	return "\<Left>\\mathcal{\<Right>}\<Esc>h~a"
@@ -997,7 +988,7 @@ inoremap <buffer> <Insert>o \overline{}<Left>
 "inoremap <buffer> <M-r> (\ref{})<Left><Left>
 "inoremap <buffer> <Insert>r (\ref{})<Left><Left>
 inoremap <buffer> <M-r> <C-R>=<SID>TexRef()<CR><Esc>F{a
-inoremap <buffer> <Insert>r <C-R>=<SID>TexRef()<CR><Esc>F{a
+" inoremap <buffer> <Insert>r <C-R>=<SID>TexRef()<CR><Esc>F{a
 function! s:TexRef()
     let insert = '(\ref{})'
     let lemma = strpart(getline("."),col(".")-7,6)
@@ -1011,11 +1002,11 @@ endfunction
 inoremap <buffer> <M-s> \sqrt{}<Left>
 inoremap <buffer> <Insert>s \sqrt{}<Left>
 
-" Insert-t or Insert-t inserts Textbf
-inoremap <buffer> <Insert>t \textbf{}<Left>
-inoremap <buffer> <M-t> \textbf{}<Left>
-vnoremap <buffer> <Insert>t <C-C>`>a}<Esc>`<i\textbf{<Esc>
-vnoremap <buffer> <M-t> <C-C>`>a}<Esc>`<i\textbf{<Esc>
+" Insert-t or Insert-t inserts \text{}
+inoremap <buffer> <Insert>t \text{}<Left>
+inoremap <buffer> <M-t> \text{}<Left>
+vnoremap <buffer> <Insert>t <C-C>`>a}<Esc>`<i\text{<Esc>
+vnoremap <buffer> <M-t> <C-C>`>a}<Esc>`<i\text{<Esc>
 
 " This is for _{}^{}.  It gets rid of the ^{} part
 inoremap <buffer> <M-x> <Esc>f^cf}
@@ -1132,7 +1123,9 @@ function! s:TexQuotes()
     endif
     return insert
 endfunction
-inoremap <buffer> " <C-R>=<SID>TexQuotes()<CR>
+if !exists("b:firefoxmode")
+    inoremap <buffer> " <C-R>=<SID>TexQuotes()<CR>
+endif
 
 " }}}
 " "========================================================================="
@@ -1177,9 +1170,9 @@ function! s:Dots(var)
         else
 	    return "\<BS>\\dots"
 	endif
-    elseif previous =~ '[\$A-Za-z]' && currentline !~ '@'
+    elseif previous =~ '[\$A-Za-z]' && currentline !~ '@' && !exists("b:firefoxmode")
 	" To get just one space, replace '.  ' with '. ' below.
-	return <SID>TexFill(b:tw, '.  ')  "TexFill is defined in Auto-split
+	return <SID>TexFill(b:tw, '.')  "TexFill is defined in Auto-split
     else
 	return '.'
     endif
@@ -1231,7 +1224,7 @@ inoremap <buffer><silent> [ <C-R>=<SID>CompleteSlash('[',']')<CR>
 inoremap <buffer><silent> $ <C-R>=<SID>Double('$','$')<CR>
 inoremap <buffer><silent> & <C-R>=<SID>DoubleAmpersands()<CR>
 inoremap <buffer><silent> { <C-R>=<SID>CompleteSlash('{','}')<CR>
-inoremap <buffer><silent> \| <C-R>=<SID>CompleteSlash("\|","\|")<CR>
+"inoremap <buffer><silent> \| <C-R>=<SID>CompleteSlash("\|","\|")<CR>
 
 " If you would rather insert $$ individually, the following macro by 
 " Charles Campbell will make the cursor blink on the previous dollar sign,
@@ -1317,7 +1310,9 @@ noremap <buffer> Q :call <SID>TexFormatLine(b:tw,getline('.'),col('.'))<CR>
 vnoremap <buffer> Q J:call <SID>TexFormatLine(b:tw,getline('.'),col('.'))<CR>
 "  With this map, <Space> will split up a long line, keeping the dollar
 "  signs together (see the next function, TexFormatLine).
-inoremap <buffer><silent> <Space> <Space><BS><C-R>=<SID>TexFill(b:tw, ' ')<CR>
+if !exists("b:firefoxmode")
+    inoremap <buffer><silent> <Space> <Space><BS><C-R>=<SID>TexFill(b:tw, ' ')<CR>
+endif
 " Note: <Space><BS> makes word completion work correctly.
 
 " }}}
@@ -1589,8 +1584,8 @@ nnoremenu 50.406 Latex.view\ dvi\ \ \ \ \ Alt-Tab :call <SID>Xdvi()<CR><Space>
 inoremenu 50.406 Latex.view\ dvi\ \ \ \ \ Alt-Tab <Esc>:call <SID>Xdvi()<CR><Space>
 nnoremenu 50.407 Latex.run\ ispell\ \ \ Shift-Ins :w<CR>:silent ! xterm -bg ivory -fn 10x20 -e ispell %<CR>:e %<CR><Space>
 inoremenu 50.407 Latex.run\ ispell\ \ \ Shift-Ins <Esc>:w<CR>:silent ! xterm -bg ivory -fn 10x20 -e ispell %<CR>:e %<CR><Space>
-"nnoremenu 50.405 Latex.run\ engspchk :so .Vim/engspchk.vim<CR>
-"inoremenu 50.405 Latex.run\ engspchk <C-O>:so .Vim/engspchk.vim<CR>
+"nnoremenu 50.405 Latex.run\ engspchk :so .vim/engspchk.vim<CR>
+"inoremenu 50.405 Latex.run\ engspchk <C-O>:so .vim/engspchk.vim<CR>
 
 " }}}
 " "========================================================================="
@@ -1610,12 +1605,15 @@ iab <buffer> \v \vfill
 " "========================================================================="
 " Personal or Temporary bindings.   {{{
 
-inoremap <buffer> ;; ;<Space><Space>
+"inoremap <buffer> ;; ;<Space><Space>
 
-inoremap <buffer> ;e E\left[\right]<Esc>F\i
+"inoremap <buffer> ;e E\left[\right]<Esc>F\i
 "inoremap <buffer> ;e \epsilon
-inoremap <buffer> ;d \diamond
-inoremap <buffer> ;I \int_{\mathbf{R}^d}
+"inoremap <buffer> ;d \diamond
+"inoremap <buffer> ;I \int_{\mathbf{R}^d}
+
+" disable type-specific indentation. it sucks for TeX.
+filetype plugin indent off
 
 " }}}
 " "========================================================================="
