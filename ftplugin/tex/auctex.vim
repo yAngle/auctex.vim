@@ -944,7 +944,7 @@ inoremap <buffer> <Insert>c <C-R>=<SID>MathCal()<CR>
 inoremap <buffer> <Insert>C <C-R>=<SID>MathCal()<CR>
 function! s:MathCal()
     if getline('.')[col('.')-2] =~ '[a-zA-Z0-9]'
-	return "\<Left>\\mathcal{\<Right>}\<Esc>h~a"
+	return "\<Left>\\mathcal{\<Right>}\<Esc>hvUla"
     else
 	return "\\cite{}\<Left>"
     endif
