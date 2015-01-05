@@ -84,7 +84,7 @@ noremap <buffer> <C-LeftMouse> :execute "!xdvi -name -xdvi -sourceposition ".lin
 " or the bibtex file entries.
 " This was inspired by the emacs package Reftex.
 
-inoremap <buffer><silent> <Tab> <C-R>=<SID>TexInsertTabWrapper('backward')<CR>
+inoremap <buffer><silent> <Tab> <C-R>=<SID>TexInsertTabWrapper('foreward')<CR>
 
 function! s:TexInsertTabWrapper(direction) 
 
