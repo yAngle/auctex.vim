@@ -121,7 +121,7 @@ function! s:TexInsertTabWrapper(direction)
     " \cite{c.*mo<Tab>} will show articles by Mueller and Moolinar, for example.
     " Once the citation is shown, you type <CR> anywhere within the citation.
     " The bibtex files listed in \bibliography{} are the ones shown.
-    if strpart(line,column-5,5) == '\ref{'
+    if 0 && strpart(line,column-5,5) == '\ref{'
 	let name = bufname(1)
 	let short = substitute(name, ".*/", "", "")
 	let aux = strpart(short, 0, strlen(short)-3)."aux"
@@ -151,7 +151,7 @@ function! s:TexInsertTabWrapper(direction)
 	    noremap <buffer> q :bwipeout!<CR>zzi
 	    return "\<Esc>"
 	endif
-    elseif strpart(line,column-6,6) == '\cite{'
+    elseif 0 && strpart(line,column-6,6) == '\cite{'
 	let tmp = tempname()
         execute "write! ".tmp
         execute "split ".tmp
