@@ -1251,7 +1251,7 @@ function! s:CompleteSlash(left,right)
     let second = getline('.')[column-1]
     if first == "\\"
 	if a:left == '['
-	    return "\[\<CR>\<CR>\\]\<Up>"
+	    return "\[\]\<Left>"
 	else
 	    return a:left . "\\" . a:right . "\<Left>\<Left>"
 	endif
