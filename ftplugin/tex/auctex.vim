@@ -857,7 +857,7 @@ inoremap <buffer> <Leader>: \dots
 inoremap <buffer> <Leader>~ \widetilde{}<Left>
 inoremap <buffer> <Leader>^ \hat{}<Left>
 inoremap <buffer> <Leader>; \dot{}<Left>
-inoremap <buffer> <Leader>- \bar{}<Left>
+inoremap <buffer> <Leader>- \overline{}<Left>
 inoremap <buffer> <Leader><M-c> \cos
 inoremap <buffer> <Leader><C-E> \exp\left(\right)<Esc>F(a
 inoremap <buffer> <Leader><C-I> \in
