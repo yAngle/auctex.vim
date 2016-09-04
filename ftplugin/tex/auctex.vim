@@ -1310,9 +1310,7 @@ noremap <buffer> Q :call <SID>TexFormatLine(b:tw,getline('.'),col('.'))<CR>
 vnoremap <buffer> Q J:call <SID>TexFormatLine(b:tw,getline('.'),col('.'))<CR>
 "  With this map, <Space> will split up a long line, keeping the dollar
 "  signs together (see the next function, TexFormatLine).
-if !exists("b:firefoxmode")
-    inoremap <buffer><silent> <Space> <Space><BS><C-R>=<SID>TexFill(b:tw, ' ')<CR>
-endif
+inoremap <buffer><silent> <Space> <Space><BS><C-R>=<SID>TexFill(b:tw, ' ')<CR>
 " Note: <Space><BS> makes word completion work correctly.
 
 " }}}
@@ -1320,7 +1318,7 @@ endif
 " Functions       {{{
 
 function! s:TexFill(width, string)
-    if col('.') > a:width
+    if !(&formatoptions =~ "l") && col('.') > a:width
 	" For future use, record the current line and 
 	" the number of the current column.
 	let current_line = getline('.')
